@@ -4,4 +4,4 @@ python:
 install:
 	- pip install pytest pytest-cov
 script: 
-	- python -m pytest test_code2.py -v --cov=code2 --cov-report=html
+	- python -m pytest Misc/test_code2.py -v --cov=code2 --cov-report=html
