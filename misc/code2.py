@@ -10,6 +10,9 @@ def mymax(x, y):
 		return y
 
 def listmax(l):
+	"""
+	Returns max number from a list of positive numbers.
+	"""
 	lmax = 0
 	for  i in l:
 		if i > lmax:
