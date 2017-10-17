@@ -8,3 +8,5 @@ script:
     - python -m pytest misc/test_code2.py -v --cov=code2 --cov-report=html
 after_success:
     - coveralls
+notifications:
+    email: false
