@@ -1,3 +1,6 @@
+.doctrees
+.buildinfo
+*.html
 *.swp
 *.pyc
 .coverage
