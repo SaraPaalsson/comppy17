@@ -5,7 +5,7 @@ python:
 install:
     - pip install -r requirements.txt
 script: 
-    - python -m pytest src/laplace_solver.py -v --cov=laplace_solver --cov-report=html < sim_test.dat
+    - python -m pytest src/laplace_solver.py -v --cov=laplace_solver --cov-report=html < src/sim_test.dat
 after_success:
     - coveralls
 notifications:
