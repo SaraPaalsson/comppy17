@@ -34,6 +34,10 @@ def test_setup_SimClass():
 	sc = SimClass('sim_test')
 	assert sc.nbr_interf == 1
 
+def test_create():
+		sc = SimClass('sim_test')
+
+
 if __name__ == '__main__':
 	print("Running main program.")
 
@@ -41,7 +45,6 @@ if __name__ == '__main__':
 	sc = SimClass('sim1')
 	print(sc.src)
 
-
-
 #	print("Setting up domain...")
+
 
