@@ -5,10 +5,13 @@ class SimClass:
 	"""
 
 	def readInput(self):
-		f = open(self.str_name,'r')	
-		data = f.readline().strip().split(' ')
-		f.close()
-		print(data)
+		if self.str_name == ".dat":
+			data = ['1','1','circle','2','1+1j','-2+-2j']
+		else:
+			f = open(self.str_name,'r')	
+			data = f.readline().strip().split(' ')
+			f.close()
+			
 		self.nbr_interf = int(data[0]) #nbr interface points
 		self.nbr_dom = int(data[1]) #nbr domain points
 		self.shape = str(data[2]) #shape of interface
@@ -25,7 +28,7 @@ class SimClass:
 				xi = int(xi[0:-1])
 			self.src.append(complex(xr,xi))
 
-	def __init__(self,str):
+	def __init__(self,str=""):
 		self.str_name = str + '.dat'
 		self.readInput()
 
@@ -35,7 +38,7 @@ def test_setup_SimClass():
 	assert sc.nbr_interf == 1
 
 def test_create():
-		sc = SimClass('sim_test')
+		sc = SimClass()
 
 
 if __name__ == '__main__':
@@ -43,7 +46,6 @@ if __name__ == '__main__':
 
 	print("Defining simulation...")
 	sc = SimClass('sim1')
-	print(sc.src)
 
 #	print("Setting up domain...")
 
