@@ -34,11 +34,9 @@ class SimClass:
 
 
 def test_setup_SimClass():
-	sc = SimClass('sim_test')
+	sc = SimClass()
 	assert sc.nbr_interf == 1
 
-def test_create():
-		sc = SimClass()
 
 
 if __name__ == '__main__':
