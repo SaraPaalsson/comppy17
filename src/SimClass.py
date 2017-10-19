@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import scipy.linalg as linalg
 
 class SimClass(object):
 	"""
@@ -11,7 +12,7 @@ class SimClass(object):
 		self.readInput()
 
 	def readInput(self):
-		if self.str_name == ".dat":
+		if self.str_name == ".dat": #If no inputfile defined. For testing.
 			data = ['1','1','circle','2','2','1+1j','-2+-2j']
 		else:
 			f = open(self.str_name,'r')	
@@ -44,21 +45,30 @@ class SimClass(object):
 		self.zpanels = self.radius*np.cos(self.tpanels) + self.radius*1j*np.sin(self.tpanels)
 
 		# Create empty arrays for interface points and weights
-		self.zDrops = np.zeros(self.nbr_panels*16)
+		self.tDrops = np.zeros(self.nbr_panels*16)
 		self.wDrops = np.zeros(self.nbr_panels*16)
 		for i in range(self.nbr_panels): #Go through all panels!
-			tmp = self.gaussleg(16,self.tpanels[i],self.tpanels[i+1])
+			n,w = self.gaussLeg(16,self.tpanels[i],self.tpanels[i+1])
+			self.tDrops[i*16:(i+1)*16] = n
+			self.wDrops[i*16:(i+1)*16] = w
 
 
-		#self.tpar = self.tpar[:-1] #Remove 2*pi (periodic)
-		#if self.shape == 'circle':
-		#	self.zDrops = r*np.cos(self.tpar) + r*1j*np.sin(self.tpar)
-		#	self.zpDrops = -r*np.sin(self.tpar) + r*1j*np.cos(self.tpar)
-		#	self.zppDrops = -r*np.cos(self.tpar) - r*1j*np.sin(self.tpar)
-
-	def gaussleg(slef,n,t1,t2):
-		print("Gaussleg")
-
+	def gaussLeg(self,n,t1,t2):
+		"""
+		Create Gauss-Legendre nodes and weights of order n, on interval [t1,t2]. 
+		As done in Trefethen.
+		"""
+		n_vec = np.linspace(1,15,15)
+		beta = 0.5*(1-(2*n_vec)**(-2))**(-1/2)
+		T = np.diag(beta,-1) + np.diag(beta,1)
+		D,V = linalg.eig(T)
+		nodes = np.real((t1*(1-D)+t2*(1+D))/2) #Remap to [t1,t2]
+		weights = 2*(V[0]**2).T
+		weights = (t2-t1)/2*weights
+		idx = np.argsort(nodes)
+		nodes = np.array(nodes)[idx]
+		weights = np.array(weights)[idx]
+		return nodes, weights
 
 def test_readInput():
 	"""
@@ -80,7 +90,28 @@ def test_createInterface():
 	sc.createInterface()
 	assert sc.tpanels[0] == 0
 	assert sc.tpanels[1] == 2*math.pi
+	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
+	assert np.abs(sc.zpanels[1]-2) < 10**(-13)
 
+def test_gaussLeg():
+	"""
+	Test Gauss-Legendre quadrature nodes and weights
+	"""
+	sc = SimClass()
+	n,w  = sc.gaussLeg(16,-1,1)
+	w_corr = np.array([0.027152459411754, 0.062253523938648, 0.095158511682493, \
+	 0.124628971255534, 0.149595988816577, 0.169156519395003, 0.182603415044924, \
+	 0.189450610455069, 0.189450610455069, 0.182603415044924, 0.169156519395003, \
+	 0.149595988816577, 0.124628971255534, 0.095158511682493, 0.062253523938648, \
+	 0.027152459411754])
+	n_corr =  np.array([-0.989400934991650, -0.944575023073233, -0.865631202387832,\
+	 -0.755404408355003, -0.617876244402644, -0.458016777657227, -0.281603550779259,\
+	  -0.095012509837637, 0.095012509837638, 0.281603550779259, 0.458016777657228, \
+	  0.617876244402644, 0.755404408355003, 0.865631202387831, 0.944575023073233, \
+	  0.989400934991650])
+	assert np.abs(sum(w)-2) < 10**(-13)
+	assert max(np.abs(w-w_corr)) < 10**(-13)
+	assert max(np.abs(n-n_corr)) < 10**(-13)
 
 if __name__ == "__main__":
 	print('Simulation class')
