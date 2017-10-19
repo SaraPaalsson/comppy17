@@ -37,10 +37,28 @@ class SimClass(object):
 		self.fillLevel = str(data[-1])
 
 	def setUp(self):
+		"""
+		Set up simulation.
+		"""
 		self.createInterface()
 		self.fillDomain()
+		self.RHS = self.rhsf()
+
+	def rhsf(self,x=-100):
+		"""
+		Compute RHS given by sources.
+		"""
+		if x == -100:
+			x = self.zDrops
+		f = 0
+		for i in range(len(self.src)):
+			f += 1/(x-self.src[i])
+		return np.real(f)
 
 	def fillDomain(self):
+		"""
+		Fill domain (interior) with computational points for evaluating solution.
+		"""
 		if self.fillLevel == "superlow":
 			nbrR = 10
 			nbrT = 10
@@ -55,6 +73,9 @@ class SimClass(object):
 
 
 	def createInterface(self):
+		"""
+		Create interface discretization.
+		"""
 		# Create panels
 		self.tpanels = np.linspace(0,2*math.pi,self.nbr_panels+1)
 		self.zpanels = self.radius*np.cos(self.tpanels) + self.radius*1j*np.sin(self.tpanels)
@@ -89,7 +110,7 @@ class SimClass(object):
 		weights = np.array(weights)[idx]
 		return nodes, weights
 
-if __name__ == "__main__":
-	print('Simulation class')
+#if __name__ == "__main__":
+#	print('Simulation class')
 
 

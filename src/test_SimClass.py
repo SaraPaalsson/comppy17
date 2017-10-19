@@ -55,3 +55,37 @@ def test_fillDomain():
 	tmp = np.shape(sc.zDom)
 	assert tmp[0] == 10 
 	assert tmp[1] == 19
+
+def test_rhsf():
+	"""
+	Test computation of rhs function.
+	"""
+	sc = simc.SimClass()
+	sc.createInterface()
+	r = sc.rhsf(0)
+	assert np.abs(r - np.real((-1/(1+1j) - 1/(-2-2j)))) < 10**(-13)
+	r = sc.rhsf()
+	assert max(np.abs(r-np.real(1/(sc.zDrops-(1+1j)) + 1/(sc.zDrops-(-2-2j))))) < 10**(-13)
+
+def test_setUp():
+	"""
+	Test setUp() function.
+	"""
+	sc = simc.SimClass()
+	sc.setUp()
+	assert sc.tpanels[0] == 0
+	assert sc.tpanels[1] == 2*math.pi
+	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
+	assert np.abs(sc.zpanels[1]-2) < 10**(-13)
+	tmp = np.shape(sc.zDom)
+	assert tmp[0] == 10 
+	assert tmp[1] == 19
+	assert max(np.abs(sc.RHS-np.real(1/(sc.zDrops-(1+1j)) + 1/(sc.zDrops-(-2-2j))))) < 10**(-13)
+
+
+
+
+
+
+
+
