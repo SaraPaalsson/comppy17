@@ -13,7 +13,7 @@ class SimClass(object):
 
 	def readInput(self):
 		if self.str_name == ".dat": #If no inputfile defined. For testing.
-			data = ['1','1','circle','2','2','1+1j','-2+-2j']
+			data = ['1','1','circle','2','2','1+1j','-2+-2j', 'superlow']
 		else:
 			f = open(self.str_name,'r')	
 			data = f.readline().strip().split(' ')
@@ -34,9 +34,25 @@ class SimClass(object):
 			else:
 				xi = int(xi[0:-1])
 			self.src.append(complex(xr,xi))
+		self.fillLevel = str(data[-1])
 
 	def setUp(self):
 		self.createInterface()
+		self.fillDomain()
+
+	def fillDomain(self):
+		if self.fillLevel == "superlow":
+			nbrR = 10
+			nbrT = 10
+		R1 = 0.4 #where to go from sparse to dense disc. in domain
+		r1 = np.linspace(0,R1,10)
+		r2 = np.linspace(R1,0.999,nbrR); r2 = r2[1:]
+		r = np.append(r1, r2) #radial discretisation
+		t = np.linspace(0,2*math.pi,nbrT+1); t = t[0:-1]
+		R,T = np.meshgrid(r,t)
+		self.zDom = R*np.cos(T) + R*1j*np.sin(T)
+		#tmp = np.reshape(self.zDom,-1) #To make into 1D array
+
 
 	def createInterface(self):
 		# Create panels
@@ -75,3 +91,5 @@ class SimClass(object):
 
 if __name__ == "__main__":
 	print('Simulation class')
+
+

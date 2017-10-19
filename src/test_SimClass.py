@@ -13,6 +13,7 @@ def test_readInput():
 	assert sc.radius == 2
 	assert sc.src[0] == 1+1j 
 	assert sc.src[1] == -2-2j
+	assert sc.fillLevel == 'superlow'
 
 def test_createInterface():
 	""" 
@@ -44,3 +45,13 @@ def test_gaussLeg():
 	assert np.abs(sum(w)-2) < 10**(-13)
 	assert max(np.abs(w-w_corr)) < 10**(-13)
 	assert max(np.abs(n-n_corr)) < 10**(-13)
+
+def test_fillDomain():
+	"""
+	Test fillDomain routine.
+	"""
+	sc = simc.SimClass()
+	sc.fillDomain()
+	tmp = np.shape(sc.zDom)
+	assert tmp[0] == 10 
+	assert tmp[1] == 19
