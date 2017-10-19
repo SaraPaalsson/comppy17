@@ -50,7 +50,11 @@ class SimClass(object):
 			n,w = self.gaussLeg(16,self.tpanels[i],self.tpanels[i+1])
 			self.tDrops[i*16:(i+1)*16] = n
 			self.wDrops[i*16:(i+1)*16] = w
-
+		self.zDrops = (self.radius*np.cos(self.tDrops) + 
+			self.radius*1j*np.sin(self.tDrops))
+		self.zpDrops = (-self.radius*np.sin(self.tDrops) +
+			self.radius*1j*np.cos(self.tDrops))
+		self.zppDrops = -self.zDrops
 
 	def gaussLeg(self,n,t1,t2):
 		"""
@@ -68,49 +72,6 @@ class SimClass(object):
 		nodes = np.array(nodes)[idx]
 		weights = np.array(weights)[idx]
 		return nodes, weights
-
-def test_readInput():
-	"""
-	Test initialization of simulation class and reading of input.
-	"""
-	sc = SimClass()
-	assert sc.nbr_panels == 1
-	assert sc.nbr_dom == 1
-	assert sc.shape == 'circle'
-	assert sc.radius == 2
-	assert sc.src[0] == 1+1j 
-	assert sc.src[1] == -2-2j
-
-def test_createInterface():
-	""" 
-	Test creation of interface.
-	"""
-	sc = SimClass()
-	sc.createInterface()
-	assert sc.tpanels[0] == 0
-	assert sc.tpanels[1] == 2*math.pi
-	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
-	assert np.abs(sc.zpanels[1]-2) < 10**(-13)
-
-def test_gaussLeg():
-	"""
-	Test Gauss-Legendre quadrature nodes and weights
-	"""
-	sc = SimClass()
-	n,w  = sc.gaussLeg(16,-1,1)
-	w_corr = np.array([0.027152459411754, 0.062253523938648, 0.095158511682493, \
-	 0.124628971255534, 0.149595988816577, 0.169156519395003, 0.182603415044924, \
-	 0.189450610455069, 0.189450610455069, 0.182603415044924, 0.169156519395003, \
-	 0.149595988816577, 0.124628971255534, 0.095158511682493, 0.062253523938648, \
-	 0.027152459411754])
-	n_corr =  np.array([-0.989400934991650, -0.944575023073233, -0.865631202387832,\
-	 -0.755404408355003, -0.617876244402644, -0.458016777657227, -0.281603550779259,\
-	  -0.095012509837637, 0.095012509837638, 0.281603550779259, 0.458016777657228, \
-	  0.617876244402644, 0.755404408355003, 0.865631202387831, 0.944575023073233, \
-	  0.989400934991650])
-	assert np.abs(sum(w)-2) < 10**(-13)
-	assert max(np.abs(w-w_corr)) < 10**(-13)
-	assert max(np.abs(n-n_corr)) < 10**(-13)
 
 if __name__ == "__main__":
 	print('Simulation class')
