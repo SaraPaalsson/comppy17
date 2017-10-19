@@ -37,7 +37,6 @@ class SimClass(object):
 
 	def setUp(self):
 		self.createInterface()
-		print("Hello")
 
 	def createInterface(self):
 		# Create panels

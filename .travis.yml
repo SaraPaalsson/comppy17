@@ -4,8 +4,10 @@ python:
     - "3.6"
 install:
     - pip install -r requirements.txt
+	- pip install --only-binary=numpy,scipy numpy scipy
 script: 
-    - python -m pytest src/laplace_solver.py -v --cov=laplace_solver --cov-report=html
+	- python -m pytest src/SimClass.py -v --cov=SimClass --cov-report=html
+	- python -m pytest src/laplace_solver.py -v --cov=laplace_solver --cov-report=html
 after_success:
     - coveralls
 notifications:
