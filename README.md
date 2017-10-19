@@ -3,4 +3,4 @@
 
 This is my collected files for the Computational Python coursed offered through SESE, autumn 2017. 
 
-In *misc* you can find some miscellaneour filest to test concepts using git, that we have covered in the course.
+In *misc* you can find some miscellaneous files to test concepts using git that we have covered in the course.
