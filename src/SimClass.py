@@ -13,7 +13,7 @@ class SimClass(object):
 
 	def readInput(self):
 		if self.str_name == ".dat": #If no inputfile defined. For testing.
-			data = ['1','1','circle','2','2','1+1j','-2+-2j', 'superlow']
+			data = ['2','1','circle','2','2','3+3j','-2.5+-2.5j', 'superlow']
 		else:
 			f = open(self.str_name,'r')	
 			data = f.readline().strip().split(' ')
@@ -27,12 +27,12 @@ class SimClass(object):
 		for i in range(nbr_src):
 			x = data[5+i]
 			x2 = x.split('+')
-			xr = int(x2[0])
+			xr = float(x2[0])
 			xi = x2[1]
 			if xi[0] is '-':
-				xi = -int(xi[1:-1])
+				xi = -float(xi[1:-1])
 			else:
-				xi = int(xi[0:-1])
+				xi = float(xi[0:-1])
 			self.src.append(complex(xr,xi))
 		self.fillLevel = str(data[-1])
 
@@ -48,12 +48,23 @@ class SimClass(object):
 		"""
 		Compute RHS given by sources.
 		"""
-		if x == -100:
-			x = self.zDrops
-		f = 0
-		for i in range(len(self.src)):
-			f += 1/(x-self.src[i])
-		return np.real(f)
+		if np.size(x) == 1: 
+			if x == -100:
+				x = self.zDrops
+				f = np.zeros(np.shape(x))
+				for j in range(np.size(f)):
+					for i in range(len(self.src)):
+						f[j] += np.real(1/(x[j]-self.src[i]))
+			else:
+				f = 0
+				for i in range(len(self.src)):
+						f += np.real(1/(x-self.src[i]))
+		else:
+			f = np.zeros(np.shape(x))
+			for j in range(np.size(f)):
+				for i in range(len(self.src)):
+					f[j] += np.real(1/(x[j]-self.src[i]))
+		return f
 
 	def fillDomain(self):
 		"""
@@ -62,15 +73,26 @@ class SimClass(object):
 		if self.fillLevel == "superlow":
 			nbrR = 10
 			nbrT = 10
+		else:
+			if self.fillLevel == "low":
+				nbrR = 20
+				nbrT = 20
 		R1 = 0.4 #where to go from sparse to dense disc. in domain
-		r1 = np.linspace(0,R1,10)
-		r2 = np.linspace(R1,0.999,nbrR); r2 = r2[1:]
+		r1 = np.linspace(0,R1,5)
+		r2 = np.linspace(R1,0.999,nbrR); 
+		r2 = r2[1:]
 		r = np.append(r1, r2) #radial discretisation
 		t = np.linspace(0,2*math.pi,nbrT+1); t = t[0:-1]
 		R,T = np.meshgrid(r,t)
-		self.zDom = R*np.cos(T) + R*1j*np.sin(T)
-		#tmp = np.reshape(self.zDom,-1) #To make into 1D array
 
+		self.zDom = np.zeros((np.size(t),np.size(r)))
+		zD = self.zDom
+		zD = zD.reshape(np.size(zD))
+		RD = R.reshape(np.size(R))
+		TD = T.reshape(np.size(T))
+
+		zD = RD*(self.radius*np.cos(TD) + self.radius*1j*np.sin(TD))
+		self.zDom = zD.reshape(np.shape(self.zDom))
 
 	def createInterface(self):
 		"""
@@ -110,7 +132,8 @@ class SimClass(object):
 		weights = np.array(weights)[idx]
 		return nodes, weights
 
-#if __name__ == "__main__":
-#	print('Simulation class')
-
+if __name__ == "__main__":
+	print('Simulation class')
+	sc = SimClass()
+	sc.setUp()
 

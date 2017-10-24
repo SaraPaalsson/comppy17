@@ -7,12 +7,12 @@ def test_readInput():
 	Test initialization of simulation class and reading of input.
 	"""
 	sc = simc.SimClass()
-	assert sc.nbr_panels == 1
+	assert sc.nbr_panels == 2
 	assert sc.nbr_dom == 1
 	assert sc.shape == 'circle'
 	assert sc.radius == 2
-	assert sc.src[0] == 1+1j 
-	assert sc.src[1] == -2-2j
+	assert sc.src[0] == 3+3j 
+	assert sc.src[1] == -2.5-2.5j
 	assert sc.fillLevel == 'superlow'
 
 def test_createInterface():
@@ -22,9 +22,9 @@ def test_createInterface():
 	sc = simc.SimClass()
 	sc.createInterface()
 	assert sc.tpanels[0] == 0
-	assert sc.tpanels[1] == 2*math.pi
+	assert sc.tpanels[2] == 2*math.pi
 	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
-	assert np.abs(sc.zpanels[1]-2) < 10**(-13)
+	assert np.abs(sc.zpanels[2]-2) < 10**(-13)
 
 def test_gaussLeg():
 	"""
@@ -54,7 +54,7 @@ def test_fillDomain():
 	sc.fillDomain()
 	tmp = np.shape(sc.zDom)
 	assert tmp[0] == 10 
-	assert tmp[1] == 19
+	assert tmp[1] == 14
 
 def test_rhsf():
 	"""
@@ -63,9 +63,9 @@ def test_rhsf():
 	sc = simc.SimClass()
 	sc.createInterface()
 	r = sc.rhsf(0)
-	assert np.abs(r - np.real((-1/(1+1j) - 1/(-2-2j)))) < 10**(-13)
+	assert np.abs(r - np.real((-1/(3+3j) - 1/(-2.5-2.5j)))) < 10**(-13)
 	r = sc.rhsf()
-	assert max(np.abs(r-np.real(1/(sc.zDrops-(1+1j)) + 1/(sc.zDrops-(-2-2j))))) < 10**(-13)
+	assert max(np.abs(r-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 10**(-13)
 
 def test_setUp():
 	"""
@@ -74,13 +74,13 @@ def test_setUp():
 	sc = simc.SimClass()
 	sc.setUp()
 	assert sc.tpanels[0] == 0
-	assert sc.tpanels[1] == 2*math.pi
+	assert sc.tpanels[2] == 2*math.pi
 	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
-	assert np.abs(sc.zpanels[1]-2) < 10**(-13)
+	assert np.abs(sc.zpanels[2]-2) < 10**(-13)
 	tmp = np.shape(sc.zDom)
 	assert tmp[0] == 10 
-	assert tmp[1] == 19
-	assert max(np.abs(sc.RHS-np.real(1/(sc.zDrops-(1+1j)) + 1/(sc.zDrops-(-2-2j))))) < 10**(-13)
+	assert tmp[1] == 14
+	assert max(np.abs(sc.RHS-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 10**(-13)
 
 
 
