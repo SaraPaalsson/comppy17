@@ -23,8 +23,8 @@ def test_createInterface():
 	sc.createInterface()
 	assert sc.tpanels[0] == 0
 	assert sc.tpanels[2] == 2*math.pi
-	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
-	assert np.abs(sc.zpanels[2]-2) < 10**(-13)
+	assert np.abs(sc.zpanels[0]-2) < 1e-13
+	assert np.abs(sc.zpanels[2]-2) < 1e-13
 
 def test_gaussLeg():
 	"""
@@ -42,9 +42,9 @@ def test_gaussLeg():
 	  -0.095012509837637, 0.095012509837638, 0.281603550779259, 0.458016777657228, \
 	  0.617876244402644, 0.755404408355003, 0.865631202387831, 0.944575023073233, \
 	  0.989400934991650])
-	assert np.abs(sum(w)-2) < 10**(-13)
-	assert max(np.abs(w-w_corr)) < 10**(-13)
-	assert max(np.abs(n-n_corr)) < 10**(-13)
+	assert np.abs(sum(w)-2) < 1e-13
+	assert max(np.abs(w-w_corr)) < 1e-13
+	assert max(np.abs(n-n_corr)) < 1e-13
 
 def test_fillDomain():
 	"""
@@ -63,9 +63,9 @@ def test_rhsf():
 	sc = simc.SimClass()
 	sc.createInterface()
 	r = sc.rhsf(0)
-	assert np.abs(r - np.real((-1/(3+3j) - 1/(-2.5-2.5j)))) < 10**(-13)
+	assert np.abs(r - np.real((-1/(3+3j) - 1/(-2.5-2.5j)))) < 1e-13
 	r = sc.rhsf()
-	assert max(np.abs(r-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 10**(-13)
+	assert max(np.abs(r-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 1e-13
 
 def test_setUp():
 	"""
@@ -75,12 +75,12 @@ def test_setUp():
 	sc.setUp()
 	assert sc.tpanels[0] == 0
 	assert sc.tpanels[2] == 2*math.pi
-	assert np.abs(sc.zpanels[0]-2) < 10**(-13)
-	assert np.abs(sc.zpanels[2]-2) < 10**(-13)
+	assert np.abs(sc.zpanels[0]-2) < 1e-13
+	assert np.abs(sc.zpanels[2]-2) < 1e-13
 	tmp = np.shape(sc.zDom)
 	assert tmp[0] == 10 
 	assert tmp[1] == 14
-	assert max(np.abs(sc.RHS-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 10**(-13)
+	assert max(np.abs(sc.RHS-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 1e-13
 
 
 

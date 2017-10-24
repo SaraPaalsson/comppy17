@@ -1,6 +1,5 @@
 import SimClass as simc
 import numpy as np
-import matplotlib.pyplot as plt 
 import scipy.sparse.linalg as spla
 import math
 
@@ -82,55 +81,12 @@ def compError(sc,u,uspecial,ucorrect):
 	"""
 	Compute errors.
 	"""
+	eps = 1e-17
 	u2 = u.reshape(np.size(u))
 	uc2 = ucorrect.reshape(np.size(ucorrect))
 	est = np.abs(u2-uc2)
+	est[est<eps] = eps
 
 	return est, None
 
-if __name__ == '__main__':
-	print("Running main program.")
-
-	inputn = 'sim1'
-	#inputn = ''
-	sc = setUpSim(inputn)
-
-	print("Computing density...")
-	mu = compDensity(sc)
-
-	print("Computing correct solution...")
-	ucorrect = compSolCorrect(sc)
-
-	print("Computing u with standard quadratre...")
-	u = compSolStandard(sc,mu)
-	
-	print("Computing errors")
-	est, esp = compError(sc,u,'',ucorrect)
-	print("Error using standard quadrature is {}".format(max(est)))
-	#print(est)
-	#est2 = est.reshape(np.shape(u))
-
-	z = sc.zDom
-	z = z.reshape(np.size(z))
-
-	fig, ax = plt.subplots()
-	cont = ax.tricontourf(np.real(z),np.imag(z),np.log10(est))
-	cb = fig.colorbar(cont)
-	cb.set_label('10log error')
-	line, = ax.plot(np.real(sc.zDrops), np.imag(sc.zDrops), 'k.-')
-	ax.axis('equal')
-	ax.set_title('Error with standard quadrature')
-	ax.set_xlabel('x')
-	ax.set_ylabel('y')
-
-	plt.show()
-
-	#print(u.reshape(np.size(u)))
-
-	#tmp = sc.zDom
-	#print(tmp.reshape(np.size(tmp)))
-
-#	# PLOT
-#	plt.plot(sc.zpanels.real,sc.zpanels.imag)
-#	plt.show()
 
