@@ -7,10 +7,9 @@ import laplace_solver as ls
 if __name__ == '__main__':
 	print("Running main program.")
 
-	inputn = 'sim1'
-	#inputn = ''
-	sc = ls.setUpSim(inputn)
-	#sc.zDom = np.array([1.9j+0])
+	inputdata = [10, 20, 'circle', 2, 2, 3+3j, -3-3j, 'low']
+	#inputdata = ''
+	sc = ls.setUpSim(inputdata)
 
 	print("Computing density...")
 	mu = ls.compDensity(sc)
