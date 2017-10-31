@@ -21,7 +21,7 @@ class SimClass(object):
 		self.nbr_panels = int(data[0]) #nbr interface points
 		self.nbr_dom = int(data[1]) #nbr domain points
 		self.shape = str(data[2]) #shape of interface
-		self.radius = int(data[3])
+		self.radius = float(data[3])
 		nbr_src = int(data[4]) #nbr sources for RHS
 		self.src = [] #sources for RHS
 		for i in range(nbr_src):

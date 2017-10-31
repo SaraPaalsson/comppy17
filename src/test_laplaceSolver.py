@@ -38,8 +38,11 @@ def test_compSolCorrect():
 def test_compError():
 	sc = lapls.setUpSim()
 	u = np.ones((3,2)) 
+	us = np.ones((3,2))
 	uc = np.ones((3,2))*2
 	uc[0] = 1
-	est, esp = lapls.compError(sc,u,'',uc)
+	est, esp = lapls.compError(sc,u,us,uc)
 	assert max(est) == 1
+	assert max(esp) == 1
 	assert est[0] == 1e-17
+	assert esp[0] == 1e-17
