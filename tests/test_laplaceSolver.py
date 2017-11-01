@@ -1,4 +1,4 @@
-import laplace_solver as lapls
+from src import laplace_solver as lapls
 import math
 import numpy as np
 

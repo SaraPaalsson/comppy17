@@ -1,4 +1,4 @@
-import SimClass as simc
+from src import SimClass as simc
 import numpy as np
 import scipy.sparse.linalg as spla
 import math
@@ -85,10 +85,9 @@ def compDensity(sc):
 	"""
 	Compute complex density for double layer formulation.
 	"""
-	N = sc.nbr_panels*16
+	print("Computing density...")
 
-	# OK
-	#RHS, wdrops, zDrops, zpDrops, zppDrops, d
+	N = sc.nbr_panels*16
 
 	# Compute limit points
 	d = sc.wDrops*np.imag(sc.zppDrops/(2*sc.zpDrops))/math.pi
@@ -119,6 +118,7 @@ def compSolStandard(sc,mu,ztarg=-100):
 	"""
 	Compute solution using standard quadrature rules.
 	"""
+	print("Computing u with standard quadrature...")
 	if ztarg == -100:
 		ztarg = sc.zDom
 
@@ -136,6 +136,7 @@ def compSolSpecial(sc,mu,u):
 	"""
 	Correct solution u using special quadrature. 
 	"""	
+	print("Computing u with special quadrature...")
 	uspecial = np.copy(u)
 	N = np.size(u)
 	us = uspecial.reshape(N)
@@ -300,13 +301,15 @@ def IPmultR(inv):
 
 
 
-def compSolCorrect(sc,ztarg=-100):
+def compSolCorrect(sc,ztarg=np.array([-100])):
 	"""
 	Compute correct solution using RHS analytic.
 	"""
-	if ztarg == -100:
-		ztarg = sc.zDom
-		ztarg = ztarg.reshape(np.size(ztarg))
+	print("Computing correct solution...")
+	if np.size(ztarg) == 1:
+		if ztarg == -100:
+			ztarg = sc.zDom
+			ztarg = ztarg.reshape(np.size(ztarg))
 	ucorrect = sc.rhsf(ztarg)
 	return ucorrect
 
@@ -314,15 +317,58 @@ def compError(sc,u,uspecial,ucorrect):
 	"""
 	Compute errors.
 	"""
+	print("Computing errors...")
 	eps = 1e-17
 	u2 = u.reshape(np.size(u))
 	uc2 = ucorrect.reshape(np.size(ucorrect))
+	
 	est = np.abs(u2-uc2)
 	est[est<eps] = eps
 
-	us2 = uspecial.reshape(np.size(uspecial))
+	if np.size(uspecial) > 1:
+		us2 = uspecial.reshape(np.size(uspecial))
+	else:
+		if uspecial == '':
+			return est, 0
+		else:
+			us2 = uspecial
 	espec = np.abs(us2-uc2)
 	espec[espec<eps] = eps
 	return est, espec
+
+
+def plotSolution(sc,ax=''):
+	if ax == '':
+		fig,ax = plt.subplots()
+	z = sc.zDom
+	z = z.reshape(np.size(z))
+	u = compSolCorrect(sc,z)
+	cont = ax.tricontourf(np.real(z),np.imag(z),u)
+
+
+def plotError(sc,err,ax='',fig=''):
+	cbp = 1
+	if ax == '':
+		fig,ax = plt.subplots()
+	else:
+		cbp = 0
+	z = sc.zDom
+	z = z.reshape(np.size(z))
+	err = err.reshape(np.size(err))
+	cont = ax.tricontourf(np.real(z),np.imag(z),np.log10(err),np.arange(-17, 1, 1),
+                   extend='both')
+	if cbp:
+		cb = fig.colorbar(cont)
+		cb.set_label('10log error')
+	line, = ax.plot(np.real(sc.zDrops), np.imag(sc.zDrops), 'k.-')
+	ax.axis('square')
+	ax.set_xlabel('x')
+	ax.set_ylabel('y')
+	return fig,ax
+
+
+
+
+
 
 
