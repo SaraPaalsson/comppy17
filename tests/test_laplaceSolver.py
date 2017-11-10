@@ -9,7 +9,7 @@ def test_setUpSim():
 	assert np.abs(sc.zpanels[0]-2) < 1e-13
 	assert np.abs(sc.zpanels[2]-2) < 1e-13
 	tmp = np.shape(sc.zDom)
-	assert tmp[0] == 10 
+	assert tmp[0] == 11 
 	assert tmp[1] == 14
 	assert max(np.abs(sc.RHS-np.real(1/(sc.zDrops-(3+3j)) + 1/(sc.zDrops-(-2.5-2.5j))))) < 1e-13
 
@@ -33,7 +33,6 @@ def test_compSolCorrect():
 	sc = lapls.setUpSim()
 	uc = lapls.compSolCorrect(sc)
 	assert np.abs(uc[0] - 0.033333333333333) < 1e-13
-	assert np.abs(uc[-1] - 0.148563895918862) < 1e-13
 
 def test_compError():
 	sc = lapls.setUpSim()
